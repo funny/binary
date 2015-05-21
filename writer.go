@@ -21,6 +21,10 @@ type Writer struct {
 	err error
 }
 
+func NewWriter(w IWriter) *Writer {
+	return &Writer{w: w}
+}
+
 func NewBufferWriter(buf []byte) *Writer {
 	return &Writer{w: NewBuffer(buf)}
 }

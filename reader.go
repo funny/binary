@@ -19,6 +19,10 @@ type Reader struct {
 	err error
 }
 
+func NewReader(r IReader) *Reader {
+	return &Reader{r: r}
+}
+
 func NewBufferReader(buf []byte) *Reader {
 	return &Reader{r: NewBuffer(buf)}
 }

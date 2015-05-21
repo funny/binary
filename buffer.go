@@ -87,9 +87,14 @@ func (b *Buffer) ReadRune() (rune, int, error) {
 }
 
 func (b *Buffer) ReadBytes(delim byte) ([]byte, error) {
-	for i := 0; i < len(b.Data); i++ {
+	if b.ReadPos == len(b.Data) {
+		return nil, io.EOF
+	}
+	s := b.ReadPos
+	for i := b.ReadPos; i < len(b.Data); i++ {
 		if b.Data[i] == delim {
-			return b.Data[:i+1], nil
+			b.ReadPos = i + 1
+			return b.Data[s:b.ReadPos], nil
 		}
 	}
 	return nil, io.EOF

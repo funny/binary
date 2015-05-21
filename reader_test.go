@@ -3,15 +3,13 @@ package binary
 import (
 	"github.com/funny/unitest"
 	"math/rand"
-	"os"
 	"testing"
 )
 
 func ReadWriteTest(t *testing.T, n int, callback func(r *Reader, w *Writer)) {
-	pipeR, pipeW, err := os.Pipe()
-	unitest.NotError(t, err)
-	r := NewBufioReader(pipeR, 1024)
-	w := NewBufioWriter(pipeW, 1024)
+	buffer := NewBuffer(nil)
+	r := NewReader(buffer)
+	w := NewWriter(buffer)
 	for i := 0; i < n; i++ {
 		callback(r, w)
 	}
