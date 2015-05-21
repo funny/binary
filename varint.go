@@ -5,6 +5,12 @@ import (
 	"io"
 )
 
+const (
+	MaxVarintLen16 = binary.MaxVarintLen16
+	MaxVarintLen32 = binary.MaxVarintLen32
+	MaxVarintLen64 = binary.MaxVarintLen64
+)
+
 func UvarintSize(x uint64) int {
 	i := 0
 	for x >= 0x80 {
