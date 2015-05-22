@@ -33,7 +33,9 @@ func (s DelimSpliter) Write(w *Writer, b []byte) {
 	if _, err := w.Write(b); err != nil {
 		return
 	}
-	w.WriteByte(s.delim)
+	if b[len(b)-1] != s.delim {
+		w.WriteByte(s.delim)
+	}
 }
 
 type HeadSpliter struct {
