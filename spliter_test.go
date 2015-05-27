@@ -6,10 +6,15 @@ import (
 	"github.com/funny/unitest"
 	"math/rand"
 	"testing"
+	"time"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 func RandBytes(n int) []byte {
-	n = rand.Intn(n)
+	n = rand.Intn(n) + 1
 	b := make([]byte, n)
 	for i := 0; i < n; i++ {
 		b[i] = byte(rand.Intn(255))
@@ -52,7 +57,7 @@ func Test_Uvarint_Spliter(t *testing.T) {
 
 func Test_Uint8_Spliter(t *testing.T) {
 	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
-		b1 := RandBytes(256)
+		b1 := RandBytes(255)
 		w.WritePacket(b1, SplitByUint8)
 		w.Flush()
 		unitest.NotError(t, w.Error())

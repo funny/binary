@@ -51,6 +51,9 @@ func (b *Buffer) Length() int {
 
 // io.Reader
 func (b *Buffer) Read(p []byte) (int, error) {
+	if b.ReadPos == len(b.Data) {
+		return 0, io.EOF
+	}
 	n, err := b.ReadAt(p, int64(b.ReadPos))
 	b.ReadPos += n
 	return n, err
@@ -81,6 +84,9 @@ func (b *Buffer) ReadAt(p []byte, off int64) (int, error) {
 
 // io.RuneReader
 func (b *Buffer) ReadRune() (rune, int, error) {
+	if b.ReadPos == len(b.Data) {
+		return 0, 0, io.EOF
+	}
 	r, n := utf8.DecodeRune(b.Data[b.ReadPos:])
 	b.ReadPos += n
 	return r, n, nil
