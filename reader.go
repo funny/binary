@@ -2,11 +2,12 @@ package binary
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"math"
 )
 
-type IReader interface {
+type BufferedReader interface {
 	io.Reader
 	io.ByteReader
 	io.RuneReader
@@ -14,24 +15,24 @@ type IReader interface {
 }
 
 type Reader struct {
-	r   IReader
+	r   BufferedReader
 	buf [MaxVarintLen64]byte
 	err error
 }
 
-func NewReader(r IReader) *Reader {
+func NewReader(r BufferedReader) *Reader {
 	return &Reader{r: r}
 }
 
 func NewBufferReader(buf []byte) *Reader {
-	return &Reader{r: NewBuffer(buf)}
+	return &Reader{r: bytes.NewBuffer(buf)}
 }
 
 func NewBufioReader(r io.Reader, size int) *Reader {
 	return &Reader{r: bufio.NewReaderSize(r, size)}
 }
 
-func (reader *Reader) Backend() IReader {
+func (reader *Reader) Reader() BufferedReader {
 	return reader.r
 }
 

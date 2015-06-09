@@ -2,10 +2,11 @@ package binary
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 )
 
-type IWriter interface {
+type BufferedWriter interface {
 	io.Writer
 	io.ByteWriter
 	WriteRune(r rune) (n int, err error)
@@ -16,24 +17,24 @@ type IFlush interface {
 }
 
 type Writer struct {
-	w   IWriter
+	w   BufferedWriter
 	wb  [MaxVarintLen64]byte
 	err error
 }
 
-func NewWriter(w IWriter) *Writer {
+func NewWriter(w BufferedWriter) *Writer {
 	return &Writer{w: w}
 }
 
 func NewBufferWriter(buf []byte) *Writer {
-	return &Writer{w: NewBuffer(buf)}
+	return &Writer{w: bytes.NewBuffer(buf)}
 }
 
 func NewBufioWriter(w io.Writer, size int) *Writer {
 	return &Writer{w: bufio.NewWriterSize(w, size)}
 }
 
-func (writer *Writer) Backend() IWriter {
+func (writer *Writer) Writer() BufferedWriter {
 	return writer.w
 }
 
