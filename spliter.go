@@ -69,6 +69,7 @@ func (s HeadSpliter) Limit(r *Reader) *io.LimitedReader {
 }
 
 var (
+	SplitByNull = SplitByDelim(0)
 	SplitByLine = SplitByDelim('\n')
 
 	SplitByUvarint = HeadSpliter{
