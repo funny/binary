@@ -2,7 +2,6 @@ package binary
 
 import (
 	"bufio"
-	"bytes"
 	"io"
 	"math"
 )
@@ -25,7 +24,7 @@ func NewReader(r BufferedReader) *Reader {
 }
 
 func NewBufferReader(buf []byte) *Reader {
-	return &Reader{r: bytes.NewBuffer(buf)}
+	return &Reader{r: NewBuffer(buf)}
 }
 
 func NewBufioReader(r io.Reader, size int) *Reader {
