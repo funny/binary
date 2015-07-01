@@ -6,23 +6,21 @@ import (
 	"io"
 )
 
-type BufferedWriter interface {
-	io.Writer
-	io.ByteWriter
+type RuneWriter interface {
 	WriteRune(r rune) (n int, err error)
 }
 
-type IFlush interface {
+type FlushWriter interface {
 	Flush() error
 }
 
 type Writer struct {
-	w   BufferedWriter
+	w   io.Writer
 	wb  [MaxVarintLen64]byte
 	err error
 }
 
-func NewWriter(w BufferedWriter) *Writer {
+func NewWriter(w io.Writer) *Writer {
 	return &Writer{w: w}
 }
 
@@ -34,7 +32,7 @@ func NewBufioWriter(w io.Writer, size int) *Writer {
 	return &Writer{w: bufio.NewWriterSize(w, size)}
 }
 
-func (writer *Writer) Writer() BufferedWriter {
+func (writer *Writer) Writer() io.Writer {
 	return writer.w
 }
 
@@ -43,7 +41,7 @@ func (writer *Writer) Error() error {
 }
 
 func (writer *Writer) Flush() error {
-	if flusher, ok := writer.w.(IFlush); ok {
+	if flusher, ok := writer.w.(FlushWriter); ok {
 		return flusher.Flush()
 	}
 	return nil
@@ -55,17 +53,20 @@ func (writer *Writer) Write(b []byte) (n int, err error) {
 	return
 }
 
-func (writer *Writer) WriteByte(b byte) (err error) {
-	err = writer.w.WriteByte(b)
-	writer.err = err
-	return
-}
-
 func (writer *Writer) WritePacket(b []byte, spliter Spliter) {
 	if writer.err != nil {
 		return
 	}
 	spliter.Write(writer, b)
+}
+
+func (writer *Writer) WriteByte(b byte) (err error) {
+	if _, ok := writer.w.(io.ByteWriter); !ok {
+		writer.w = bufio.NewWriter(writer.w)
+	}
+	err = writer.w.(io.ByteWriter).WriteByte(b)
+	writer.err = err
+	return
 }
 
 func (writer *Writer) WriteBytes(b []byte) {
@@ -80,7 +81,10 @@ func (writer *Writer) WriteString(s string) {
 }
 
 func (writer *Writer) WriteRune(r rune) {
-	_, writer.err = writer.w.WriteRune(r)
+	if _, ok := writer.w.(RuneWriter); !ok {
+		writer.w = bufio.NewWriter(writer.w)
+	}
+	_, writer.err = writer.w.(RuneWriter).WriteRune(r)
 }
 
 func (writer *Writer) WriteUvarint(v uint64) {
@@ -107,7 +111,9 @@ func (writer *Writer) WriteUint8(v uint8) {
 	if writer.err != nil {
 		return
 	}
-	writer.err = writer.w.WriteByte(byte(v))
+	b := writer.wb[:1]
+	b[0] = v
+	_, writer.err = writer.w.Write(b)
 }
 
 func (writer *Writer) WriteUint16BE(v uint16) {
@@ -271,3 +277,16 @@ func (writer *Writer) WriteFloat64LE(v float64) {
 	PutFloat64LE(b, v)
 	_, writer.err = writer.w.Write(b)
 }
+
+func (writer *Writer) WriteInt16BE(v int16) { writer.WriteUint16BE(uint16(v)) }
+func (writer *Writer) WriteInt16LE(v int16) { writer.WriteUint16LE(uint16(v)) }
+func (writer *Writer) WriteInt32BE(v int32) { writer.WriteUint32BE(uint32(v)) }
+func (writer *Writer) WriteInt32LE(v int32) { writer.WriteUint32LE(uint32(v)) }
+func (writer *Writer) WriteInt40BE(v int64) { writer.WriteUint40BE(uint64(v)) }
+func (writer *Writer) WriteInt40LE(v int64) { writer.WriteUint40LE(uint64(v)) }
+func (writer *Writer) WriteInt48BE(v int64) { writer.WriteUint48BE(uint64(v)) }
+func (writer *Writer) WriteInt48LE(v int64) { writer.WriteUint48LE(uint64(v)) }
+func (writer *Writer) WriteInt56BE(v int64) { writer.WriteUint56BE(uint64(v)) }
+func (writer *Writer) WriteInt56LE(v int64) { writer.WriteUint56LE(uint64(v)) }
+func (writer *Writer) WriteInt64BE(v int64) { writer.WriteUint64BE(uint64(v)) }
+func (writer *Writer) WriteInt64LE(v int64) { writer.WriteUint64LE(uint64(v)) }
