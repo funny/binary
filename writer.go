@@ -41,10 +41,10 @@ func (writer *Writer) Error() error {
 }
 
 func (writer *Writer) Flush() error {
-	if flusher, ok := writer.w.(FlushWriter); ok {
-		return flusher.Flush()
+	if flusher, ok := writer.w.(FlushWriter); writer.err != nil && ok {
+		writer.err = flusher.Flush()
 	}
-	return nil
+	return writer.err
 }
 
 func (writer *Writer) Write(b []byte) (n int, err error) {
