@@ -35,6 +35,10 @@ func (r *PacketReader) Read(p []byte) (int, error) {
 	}
 }
 
+func (r *PacketReader) ReadPacket() ([]byte, error) {
+	return r.Reader.ReadPacket(r.Spliter), r.Reader.Error()
+}
+
 type PacketWriter struct {
 	Spliter Spliter
 	Writer  *Writer
