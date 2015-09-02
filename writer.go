@@ -41,7 +41,7 @@ func (writer *Writer) Error() error {
 }
 
 func (writer *Writer) Flush() error {
-	if flusher, ok := writer.w.(FlushWriter); writer.err != nil && ok {
+	if flusher, ok := writer.w.(FlushWriter); writer.err == nil && ok {
 		writer.err = flusher.Flush()
 	}
 	return writer.err
