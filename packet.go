@@ -57,7 +57,10 @@ func (w *PacketWriter) Write(p []byte) (int, error) {
 }
 
 func (w *PacketWriter) Flush() error {
-	w.Writer.WritePacket(w.Buffer.Data, w.Spliter)
-	w.Buffer.Reset(w.Buffer.Data[0:0])
-	return w.Writer.Flush()
+	if len(w.Buffer.Data) > 0 {
+		w.Writer.WritePacket(w.Buffer.Data, w.Spliter)
+		w.Buffer.Reset(w.Buffer.Data[0:0])
+		return w.Writer.Flush()
+	}
+	return nil
 }
