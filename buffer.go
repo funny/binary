@@ -7,6 +7,8 @@ import (
 )
 
 type Buffer struct {
+	pool    *BufferPool
+	chunk   *chunk
 	Data    []byte
 	ReadPos int
 }
@@ -19,7 +21,7 @@ func MakeBuffer(size, capacity int) *Buffer {
 	return NewBuffer(make([]byte, size, capacity))
 }
 
-func (b *Buffer) Grows(n int) (i int) {
+func (b *Buffer) grows(n int, renew bool) (i int) {
 	i = len(b.Data)
 
 	newLen := len(b.Data) + n
@@ -28,15 +30,47 @@ func (b *Buffer) Grows(n int) (i int) {
 		return
 	}
 
-	data := make([]byte, newLen, cap(b.Data)/4+newLen)
-	copy(data, b.Data)
-	b.Data = data
+	if b.pool == nil {
+		data := make([]byte, newLen, cap(b.Data)/4+newLen)
+		if !renew {
+			copy(data, b.Data)
+		}
+		b.Data = data
+	} else {
+		newChunk := b.pool.alloc(newLen, cap(b.Data)/4+newLen)
+		if !renew {
+			copy(newChunk.Data, b.Data)
+		}
+		b.Data = newChunk.Data
+		b.chunk.Free()
+		b.chunk = newChunk
+	}
 	return
 }
 
+func (b *Buffer) Grows(n int) (i int) {
+	return b.grows(n, false)
+}
+
+func (b *Buffer) Free() {
+	if b.chunk != nil {
+		b.chunk.Free()
+		*b = Buffer{}
+	}
+}
+
 func (b *Buffer) Reset(data []byte) {
+	b.Free()
 	b.Data = data
 	b.ReadPos = 0
+}
+
+func (b *Buffer) Renew(n int) {
+	if n > len(b.Data) {
+		b.grows(n-len(b.Data), true)
+	} else {
+		b.Data = b.Data[:n]
+	}
 }
 
 func (b *Buffer) Bytes() []byte {
