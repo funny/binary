@@ -1,7 +1,7 @@
 package binary
 
 import (
-	"github.com/funny/unitest"
+	"github.com/funny/utest"
 	"io"
 	"testing"
 )
@@ -15,15 +15,15 @@ func Test_PacketReaderWriter(t *testing.T) {
 		p2 := make([]byte, len(p1))
 
 		n, err := w.Write(p1)
-		unitest.AssertNotError(t, err)
-		unitest.AssertInt(t, n, "==", len(p1))
+		utest.IsNilNow(t, err)
+		utest.EqualNow(t, n, len(p1))
 
 		err = w.Flush()
-		unitest.AssertNotError(t, err)
+		utest.IsNilNow(t, err)
 
 		n, err = io.ReadFull(r, p2)
-		unitest.AssertNotError(t, err)
-		unitest.AssertInt(t, n, "==", len(p1))
-		unitest.AssertBytes(t, p1, p2)
+		utest.IsNilNow(t, err)
+		utest.EqualNow(t, n, len(p1))
+		utest.EqualNow(t, p1, p2)
 	}
 }

@@ -2,7 +2,7 @@ package binary
 
 import (
 	"encoding/binary"
-	"github.com/funny/unitest"
+	"github.com/funny/utest"
 	"testing"
 )
 
@@ -36,28 +36,28 @@ func Test_Binary(t *testing.T) {
 	x := make([]byte, 8)
 
 	PutUintLE(x, 2, uint64(0xAB))
-	unitest.AssertUint64(t, GetUintLE(x, 2), "==", 0xAB)
-	unitest.AssertUint16(t, binary.LittleEndian.Uint16(x), "==", 0xAB)
+	utest.EqualNow(t, GetUintLE(x, 2), 0xAB)
+	utest.EqualNow(t, binary.LittleEndian.Uint16(x), 0xAB)
 
 	PutUintBE(x, 2, uint64(0xAB))
-	unitest.AssertUint64(t, GetUintBE(x, 2), "==", 0xAB)
-	unitest.AssertUint16(t, binary.BigEndian.Uint16(x), "==", 0xAB)
+	utest.EqualNow(t, GetUintBE(x, 2), 0xAB)
+	utest.EqualNow(t, binary.BigEndian.Uint16(x), 0xAB)
 
 	PutUintLE(x, 4, uint64(0xABCD))
-	unitest.AssertUint64(t, GetUintLE(x, 4), "==", 0xABCD)
-	unitest.AssertUint32(t, binary.LittleEndian.Uint32(x), "==", 0xABCD)
+	utest.EqualNow(t, GetUintLE(x, 4), 0xABCD)
+	utest.EqualNow(t, binary.LittleEndian.Uint32(x), 0xABCD)
 
 	PutUintBE(x, 4, uint64(0xABCD))
-	unitest.AssertUint64(t, GetUintBE(x, 4), "==", 0xABCD)
-	unitest.AssertUint32(t, binary.BigEndian.Uint32(x), "==", 0xABCD)
+	utest.EqualNow(t, GetUintBE(x, 4), 0xABCD)
+	utest.EqualNow(t, binary.BigEndian.Uint32(x), 0xABCD)
 
 	PutUintLE(x, 8, uint64(0xABCDEFAB))
-	unitest.AssertUint64(t, GetUintLE(x, 8), "==", 0xABCDEFAB)
-	unitest.AssertUint64(t, binary.LittleEndian.Uint64(x), "==", 0xABCDEFAB)
+	utest.EqualNow(t, GetUintLE(x, 8), 0xABCDEFAB)
+	utest.EqualNow(t, binary.LittleEndian.Uint64(x), 0xABCDEFAB)
 
 	PutUintBE(x, 8, uint64(0xABCDEFAB))
-	unitest.AssertUint64(t, GetUintBE(x, 8), "==", 0xABCDEFAB)
-	unitest.AssertUint64(t, binary.BigEndian.Uint64(x), "==", 0xABCDEFAB)
+	utest.EqualNow(t, GetUintBE(x, 8), 0xABCDEFAB)
+	utest.EqualNow(t, binary.BigEndian.Uint64(x), 0xABCDEFAB)
 }
 
 func Benchmark_Binary_PutUintLE_2(b *testing.B) {
