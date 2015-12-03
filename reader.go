@@ -6,17 +6,18 @@ import (
 )
 
 type Reader struct {
-	r   io.Reader
+	R   io.Reader
 	buf [MaxVarintLen64]byte
 	err error
 }
 
 func NewReader(r io.Reader) *Reader {
-	return &Reader{r: r}
+	return &Reader{R: r}
 }
 
-func (reader *Reader) Reader() io.Reader {
-	return reader.r
+func (reader *Reader) Reset(r io.Reader) {
+	reader.R = r
+	reader.err = nil
 }
 
 func (reader *Reader) Error() error {
@@ -27,7 +28,7 @@ func (reader *Reader) Read(b []byte) (n int, err error) {
 	if reader.err != nil {
 		return 0, reader.err
 	}
-	n, err = reader.r.Read(b)
+	n, err = reader.R.Read(b)
 	reader.err = err
 	return
 }
@@ -35,7 +36,7 @@ func (reader *Reader) Read(b []byte) (n int, err error) {
 func (reader *Reader) ReadBytes(n int) (b []byte) {
 	var nn int
 	b = make([]byte, n)
-	nn, reader.err = io.ReadFull(reader.r, b)
+	nn, reader.err = io.ReadFull(reader.R, b)
 	return b[:nn]
 }
 
@@ -47,7 +48,7 @@ func (reader *Reader) ReadUvarint() (v uint64) {
 	if reader.err != nil {
 		return
 	}
-	v, reader.err = ReadUvarint(reader.r.(io.ByteReader))
+	v, reader.err = ReadUvarint(reader.R.(io.ByteReader))
 	return
 }
 
@@ -55,7 +56,7 @@ func (reader *Reader) ReadVarint() (v int64) {
 	if reader.err != nil {
 		return
 	}
-	v, reader.err = ReadVarint(reader.r.(io.ByteReader))
+	v, reader.err = ReadVarint(reader.R.(io.ByteReader))
 	return
 }
 
@@ -64,7 +65,7 @@ func (reader *Reader) seek(n int) []byte {
 		return nil
 	}
 	b := reader.buf[:n]
-	_, reader.err = io.ReadFull(reader.r, b)
+	_, reader.err = io.ReadFull(reader.R, b)
 	return b
 }
 
