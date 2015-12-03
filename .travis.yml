@@ -3,11 +3,9 @@ language: go
 go:
   - 1.5
 
-
-before_install:
-    - go get github.com/mattn/goveralls
-
 install:
+    - go get github.com/mattn/goveralls
+    - go get github.com/funny/utest
     - go get -d -v ./... && go build -v ./...
 
 script:
