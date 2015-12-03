@@ -1,18 +1,8 @@
 package binary
 
 import (
-	"bufio"
-	"bytes"
 	"io"
 )
-
-type RuneWriter interface {
-	WriteRune(r rune) (n int, err error)
-}
-
-type FlushWriter interface {
-	Flush() error
-}
 
 type Writer struct {
 	w   io.Writer
@@ -24,14 +14,6 @@ func NewWriter(w io.Writer) *Writer {
 	return &Writer{w: w}
 }
 
-func NewBufferWriter(buf []byte) *Writer {
-	return &Writer{w: bytes.NewBuffer(buf)}
-}
-
-func NewBufioWriter(w io.Writer, size int) *Writer {
-	return &Writer{w: bufio.NewWriterSize(w, size)}
-}
-
 func (writer *Writer) Writer() io.Writer {
 	return writer.w
 }
@@ -40,31 +22,8 @@ func (writer *Writer) Error() error {
 	return writer.err
 }
 
-func (writer *Writer) Flush() error {
-	if flusher, ok := writer.w.(FlushWriter); writer.err == nil && ok {
-		writer.err = flusher.Flush()
-	}
-	return writer.err
-}
-
 func (writer *Writer) Write(b []byte) (n int, err error) {
 	n, err = writer.w.Write(b)
-	writer.err = err
-	return
-}
-
-func (writer *Writer) WritePacket(b []byte, spliter Spliter) {
-	if writer.err != nil {
-		return
-	}
-	spliter.Write(writer, b)
-}
-
-func (writer *Writer) WriteByte(b byte) (err error) {
-	if _, ok := writer.w.(io.ByteWriter); !ok {
-		writer.w = bufio.NewWriter(writer.w)
-	}
-	err = writer.w.(io.ByteWriter).WriteByte(b)
 	writer.err = err
 	return
 }
@@ -78,13 +37,6 @@ func (writer *Writer) WriteBytes(b []byte) {
 
 func (writer *Writer) WriteString(s string) {
 	writer.WriteBytes([]byte(s))
-}
-
-func (writer *Writer) WriteRune(r rune) {
-	if _, ok := writer.w.(RuneWriter); !ok {
-		writer.w = bufio.NewWriter(writer.w)
-	}
-	_, writer.err = writer.w.(RuneWriter).WriteRune(r)
 }
 
 func (writer *Writer) WriteUvarint(v uint64) {

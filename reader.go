@@ -1,14 +1,9 @@
 package binary
 
 import (
-	"bufio"
 	"io"
 	"math"
 )
-
-type DelimReader interface {
-	ReadBytes(delim byte) (line []byte, err error)
-}
 
 type Reader struct {
 	r   io.Reader
@@ -18,14 +13,6 @@ type Reader struct {
 
 func NewReader(r io.Reader) *Reader {
 	return &Reader{r: r}
-}
-
-func NewBufferReader(buf []byte) *Reader {
-	return &Reader{r: NewBuffer(buf)}
-}
-
-func NewBufioReader(r io.Reader, size int) *Reader {
-	return &Reader{r: bufio.NewReaderSize(r, size)}
 }
 
 func (reader *Reader) Reader() io.Reader {
@@ -45,66 +32,10 @@ func (reader *Reader) Read(b []byte) (n int, err error) {
 	return
 }
 
-func (reader *Reader) getByteReader() io.ByteReader {
-	if _, ok := reader.r.(io.ByteReader); !ok {
-		reader.r = bufio.NewReader(reader.r)
-	}
-	return reader.r.(io.ByteReader)
-}
-
-func (reader *Reader) ReadByte() (b byte, err error) {
-	if reader.err != nil {
-		return 0, reader.err
-	}
-
-	b, err = reader.getByteReader().ReadByte()
-	reader.err = err
-	return
-}
-
-func (reader *Reader) ReadRune() (r rune, n int, err error) {
-	if reader.err != nil {
-		return 0, 0, reader.err
-	}
-	if _, ok := reader.r.(io.RuneReader); !ok {
-		reader.r = bufio.NewReader(reader.r)
-	}
-	r, n, err = reader.r.(io.RuneReader).ReadRune()
-	reader.err = err
-	return
-}
-
-func (reader *Reader) Delimit(delim byte) (b []byte) {
-	if reader.err != nil {
-		return nil
-	}
-	if _, ok := reader.r.(DelimReader); !ok {
-		reader.r = bufio.NewReader(reader.r)
-	}
-	b, reader.err = reader.r.(DelimReader).ReadBytes(delim)
-	return
-}
-
-func (reader *Reader) ReadPacket(spliter Spliter) (b []byte) {
-	if reader.err != nil {
-		return nil
-	}
-	b = spliter.Read(reader)
-	return
-}
-
-func (reader *Reader) ReadFull(b []byte) (n int, err error) {
-	if reader.err != nil {
-		return 0, reader.err
-	}
-	n, err = io.ReadFull(reader.r, b)
-	reader.err = err
-	return
-}
-
 func (reader *Reader) ReadBytes(n int) (b []byte) {
+	var nn int
 	b = make([]byte, n)
-	nn, _ := reader.ReadFull(b)
+	nn, reader.err = io.ReadFull(reader.r, b)
 	return b[:nn]
 }
 
@@ -116,7 +47,7 @@ func (reader *Reader) ReadUvarint() (v uint64) {
 	if reader.err != nil {
 		return
 	}
-	v, reader.err = ReadUvarint(reader.getByteReader())
+	v, reader.err = ReadUvarint(reader.r.(io.ByteReader))
 	return
 }
 
@@ -124,7 +55,7 @@ func (reader *Reader) ReadVarint() (v int64) {
 	if reader.err != nil {
 		return
 	}
-	v, reader.err = ReadVarint(reader.getByteReader())
+	v, reader.err = ReadVarint(reader.r.(io.ByteReader))
 	return
 }
 
