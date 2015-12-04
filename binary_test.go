@@ -3,6 +3,7 @@ package binary
 import (
 	"encoding/binary"
 	"github.com/funny/utest"
+	"math/rand"
 	"testing"
 )
 
@@ -96,6 +97,26 @@ func Test_Binary(t *testing.T) {
 	utest.EqualNow(t, GetUintBE(x, 8), uint64(0xAABBCCDDEEFF0011))
 	utest.EqualNow(t, GetUint64BE(x), uint64(0xAABBCCDDEEFF0011))
 	utest.EqualNow(t, binary.BigEndian.Uint64(x), uint64(0xAABBCCDDEEFF0011))
+}
+
+func Test_VarintSize(t *testing.T) {
+	b := make([]byte, MaxVarintLen64)
+	for i := 0; i < 100000; i++ {
+		v := rand.Int63()
+		size1 := VarintSize(v)
+		size2 := PutVarint(b, v)
+		utest.EqualNow(t, size1, size2)
+	}
+}
+
+func Test_UvarintSize(t *testing.T) {
+	b := make([]byte, MaxVarintLen64)
+	for i := 0; i < 100000; i++ {
+		v := uint64(rand.Int63())
+		size1 := UvarintSize(v)
+		size2 := PutUvarint(b, v)
+		utest.EqualNow(t, size1, size2)
+	}
 }
 
 func Benchmark_Binary_PutUintLE_2(b *testing.B) {
