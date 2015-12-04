@@ -145,8 +145,11 @@ func (reader *Reader) ReadFloat64LE() float64 {
 	return GetFloat64LE(reader.seek(8))
 }
 
+func (reader *Reader) ReadInt8() int8     { return int8(reader.ReadUint8()) }
 func (reader *Reader) ReadInt16BE() int16 { return int16(reader.ReadUint16BE()) }
 func (reader *Reader) ReadInt16LE() int16 { return int16(reader.ReadUint16LE()) }
+func (reader *Reader) ReadInt24BE() int32 { return int32(reader.ReadUint24BE()) }
+func (reader *Reader) ReadInt24LE() int32 { return int32(reader.ReadUint24LE()) }
 func (reader *Reader) ReadInt32BE() int32 { return int32(reader.ReadUint32BE()) }
 func (reader *Reader) ReadInt32LE() int32 { return int32(reader.ReadUint32LE()) }
 func (reader *Reader) ReadInt40BE() int64 { return int64(reader.ReadUint40BE()) }

@@ -141,8 +141,11 @@ func (writer *Writer) WriteFloat64LE(v float64) {
 	writer.Write(writer.wb[:8])
 }
 
+func (writer *Writer) WriteInt8(v int8)     { writer.WriteUint8(uint8(v)) }
 func (writer *Writer) WriteInt16BE(v int16) { writer.WriteUint16BE(uint16(v)) }
 func (writer *Writer) WriteInt16LE(v int16) { writer.WriteUint16LE(uint16(v)) }
+func (writer *Writer) WriteInt24BE(v int32) { writer.WriteUint24BE(uint32(v)) }
+func (writer *Writer) WriteInt24LE(v int32) { writer.WriteUint24LE(uint32(v)) }
 func (writer *Writer) WriteInt32BE(v int32) { writer.WriteUint32BE(uint32(v)) }
 func (writer *Writer) WriteInt32LE(v int32) { writer.WriteUint32LE(uint32(v)) }
 func (writer *Writer) WriteInt40BE(v int64) { writer.WriteUint40BE(uint64(v)) }
