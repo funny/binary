@@ -104,10 +104,10 @@ func Test_Uint32LE(t *testing.T) {
 func Test_Uint40BE(t *testing.T) {
 	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
 		v1 := uint64(rand.Intn(0xFFFFFFFFFF))
-		w.WriteUint64BE(v1)
+		w.WriteUint40BE(v1)
 		utest.IsNilNow(t, w.Error())
 
-		v2 := r.ReadUint64BE()
+		v2 := r.ReadUint40BE()
 		utest.IsNilNow(t, r.Error())
 		utest.EqualNow(t, v1, v2)
 	})
