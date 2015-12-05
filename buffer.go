@@ -18,6 +18,10 @@ func (buf *Buffer) Read(b []byte) (int, error) {
 	return n, nil
 }
 
+func (buf *Buffer) ReadByte() (byte, error) {
+	return buf.ReadUint8(), nil
+}
+
 func (buf *Buffer) Write(b []byte) (int, error) {
 	n := copy(buf.Data[buf.WritePos:], b)
 	buf.WritePos += n

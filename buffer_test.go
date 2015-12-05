@@ -355,3 +355,228 @@ func Test_Buffer_Int64LE(t *testing.T) {
 	v2 := buf.ReadInt64LE()
 	utest.EqualNow(t, v1, v2)
 }
+
+var bmBuffer = Buffer{Data: bmBuf}
+
+func Benchmark_Buffer_ReadUint16LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint16LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint16BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint16BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint24LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint24LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint24BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint24BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint32LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint32LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint32BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint32BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint40LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint40LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint40BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint40BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint48LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint48LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint48BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint48BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint56LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint56LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint56BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint56BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint64LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint64LE()
+	}
+}
+
+func Benchmark_Buffer_ReadUint64BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUint64BE()
+	}
+}
+
+func Benchmark_Buffer_ReadUvarint(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadUvarint()
+	}
+}
+
+func Benchmark_Buffer_ReadVarint(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.ReadPos = 0
+		bmBuffer.ReadVarint()
+	}
+}
+
+func Benchmark_Buffer_WriteUint16BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint16BE(uint16(i))
+	}
+}
+func Benchmark_Buffer_WriteUint16LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint16LE(uint16(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint24BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint24BE(uint32(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint24LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint24LE(uint32(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint32BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint32BE(uint32(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint32LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint32LE(uint32(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint40BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint40BE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint40LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint40LE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint48BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint48BE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint48LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint48LE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint56BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint56BE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint56LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint56LE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint64BE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint64BE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUint64LE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUint64LE(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteUvarint(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteUvarint(uint64(i))
+	}
+}
+
+func Benchmark_Buffer_WriteVarint(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bmBuffer.WritePos = 0
+		bmBuffer.WriteVarint(int64(i))
+	}
+}
