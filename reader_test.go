@@ -12,8 +12,25 @@ func ReadWriteTest(t *testing.T, n int, callback func(r *Reader, w *Writer)) {
 	r := NewReader(&buffer)
 	w := NewWriter(&buffer)
 	for i := 0; i < n; i++ {
+		buffer.Reset()
 		callback(r, w)
 	}
+}
+
+func Test_ReadWrite(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		b := RandBytes(256)
+
+		n, err := w.Write(b)
+		utest.IsNilNow(t, err)
+		utest.EqualNow(t, n, len(b))
+
+		c := make([]byte, len(b))
+		n, err = r.Read(c)
+		utest.IsNilNow(t, err)
+		utest.EqualNow(t, n, len(b))
+		utest.EqualNow(t, b, c)
+	})
 }
 
 func Test_Uint8(t *testing.T) {
