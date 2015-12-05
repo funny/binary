@@ -39,11 +39,23 @@ func Test_ReadWrite2(t *testing.T) {
 	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
 		b := RandBytes(256)
 
-		n, err := w.Write(b)
-		utest.IsNilNow(t, err)
-		utest.EqualNow(t, n, len(b))
+		w.WriteBytes(b)
+		utest.IsNilNow(t, w.Error())
 
 		c := r.ReadBytes(len(b))
+		utest.IsNilNow(t, r.Error())
+		utest.EqualNow(t, b, c)
+	})
+}
+
+func Test_ReadWrite3(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		b := string(RandBytes(256))
+
+		w.WriteString(b)
+		utest.IsNilNow(t, w.Error())
+
+		c := r.ReadString(len(b))
 		utest.IsNilNow(t, r.Error())
 		utest.EqualNow(t, b, c)
 	})

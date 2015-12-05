@@ -5,7 +5,12 @@ import (
 	"github.com/funny/utest"
 	"math/rand"
 	"testing"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func GetUintLE(b []byte, n uint) (r uint64) {
 	for i := uint(0); i < n; i++ {
