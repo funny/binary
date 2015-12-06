@@ -6,11 +6,10 @@ go:
 install:
     - go get github.com/mattn/goveralls
     - go get github.com/funny/utest
-    - go get -d -v ./... && go build -v ./...
 
 script:
-    - go vet -x ./...
-    - go test -v ./...
+    - go vet -x
+    - go test -v -bench=.
     - go test -covermode=count -coverprofile=profile.cov .
 
 after_script:

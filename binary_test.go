@@ -26,15 +26,17 @@ func PutUintLE(b []byte, n uint, v uint64) {
 }
 
 func GetUintBE(b []byte, n uint) (r uint64) {
-	for i := uint(0); i < n; i++ {
-		r |= uint64(b[i]) << (8 * (n - 1 - i))
+	n -= 1
+	for i := uint(0); i <= n; i++ {
+		r |= uint64(b[i]) << (8 * (n - i))
 	}
 	return
 }
 
 func PutUintBE(b []byte, n uint, v uint64) {
-	for i := uint(0); i < n; i++ {
-		b[i] = byte(v >> (8 * (n - 1 - i)))
+	n -= 1
+	for i := uint(0); i <= n; i++ {
+		b[i] = byte(v >> (8 * (n - i)))
 	}
 }
 
