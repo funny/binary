@@ -2,6 +2,7 @@ package binary
 
 import (
 	"errors"
+	"io"
 )
 
 var ErrBufferFull = errors.New("funny/binary.Buffer: buffer full")
@@ -12,14 +13,24 @@ type Buffer struct {
 	WritePos int
 }
 
+var _ io.Reader = (*Buffer)(nil)
+var _ io.Writer = (*Buffer)(nil)
+var _ io.ByteReader = (*Buffer)(nil)
+
+func (buf *Buffer) Grow(n int) {
+	if n = buf.WritePos + n; n <= cap(buf.Data) {
+		buf.Data = buf.Data[:n]
+	} else {
+		newData := make([]byte, n, n+512)
+		copy(newData, buf.Data)
+		buf.Data = newData
+	}
+}
+
 func (buf *Buffer) Read(b []byte) (int, error) {
 	n := copy(b, buf.Data[buf.ReadPos:])
 	buf.ReadPos += n
 	return n, nil
-}
-
-func (buf *Buffer) ReadByte() (byte, error) {
-	return buf.ReadUint8(), nil
 }
 
 func (buf *Buffer) Write(b []byte) (int, error) {
@@ -29,6 +40,59 @@ func (buf *Buffer) Write(b []byte) (int, error) {
 		return n, ErrBufferFull
 	}
 	return n, nil
+}
+
+func (buf *Buffer) ReadByte() (byte, error) {
+	return buf.ReadUint8(), nil
+}
+
+func (buf *Buffer) ReadBytes(n int) []byte {
+	b := make([]byte, n)
+	copy(b, buf.Data[buf.ReadPos:buf.ReadPos+n])
+	buf.ReadPos += n
+	return b
+}
+
+func (buf *Buffer) WriteBytes(b []byte) {
+	n := copy(buf.Data[buf.WritePos:], b)
+	buf.WritePos += n
+	if n != len(b) {
+		panic(ErrBufferFull)
+	}
+}
+
+func (buf *Buffer) ReadString(n int) string {
+	s := string(buf.Data[buf.ReadPos : buf.ReadPos+n])
+	buf.ReadPos += n
+	return s
+}
+
+func (buf *Buffer) WriteString(s string) {
+	n := copy(buf.Data[buf.WritePos:], s)
+	buf.WritePos += n
+	if n != len(s) {
+		panic(ErrBufferFull)
+	}
+}
+
+func (buf *Buffer) ReadUvarint() uint64 {
+	v, n := GetUvarint(buf.Data[buf.ReadPos:])
+	buf.ReadPos += n
+	return v
+}
+
+func (buf *Buffer) WriteUvarint(v uint64) {
+	buf.WritePos += PutUvarint(buf.Data[buf.WritePos:], v)
+}
+
+func (buf *Buffer) ReadVarint() int64 {
+	v, n := GetVarint(buf.Data[buf.ReadPos:])
+	buf.ReadPos += n
+	return v
+}
+
+func (buf *Buffer) WriteVarint(v int64) {
+	buf.WritePos += PutVarint(buf.Data[buf.WritePos:], v)
 }
 
 func (buf *Buffer) ReadUint8() (v uint8) {
@@ -145,18 +209,6 @@ func (buf *Buffer) ReadFloat64LE() (v float64) {
 	return
 }
 
-func (buf *Buffer) ReadUvarint() uint64 {
-	v, n := GetUvarint(buf.Data[buf.ReadPos:])
-	buf.ReadPos += n
-	return v
-}
-
-func (buf *Buffer) ReadVarint() int64 {
-	v, n := GetVarint(buf.Data[buf.ReadPos:])
-	buf.ReadPos += n
-	return v
-}
-
 func (buf *Buffer) WriteUint8(v uint8) {
 	buf.Data[buf.WritePos] = byte(v)
 	buf.WritePos += 1
@@ -249,14 +301,6 @@ func (buf *Buffer) WriteFloat64BE(v float64) {
 func (buf *Buffer) WriteFloat64LE(v float64) {
 	PutFloat64LE(buf.Data[buf.WritePos:], v)
 	buf.WritePos += 8
-}
-
-func (buf *Buffer) WriteUvarint(v uint64) {
-	buf.WritePos += PutUvarint(buf.Data[buf.WritePos:], v)
-}
-
-func (buf *Buffer) WriteVarint(v int64) {
-	buf.WritePos += PutVarint(buf.Data[buf.WritePos:], v)
 }
 
 func (buf *Buffer) ReadInt8() int8     { return int8(buf.ReadUint8()) }

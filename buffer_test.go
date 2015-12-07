@@ -16,9 +16,10 @@ func RandBytes(n int) []byte {
 }
 
 func Test_Buffer_ReadWrite(t *testing.T) {
+	var buf Buffer
 	for i := 0; i < 10000; i++ {
-		b := RandBytes(512)
-		buf := Buffer{Data: make([]byte, len(b))}
+		b := RandBytes(256)
+		buf.Grow(len(b))
 
 		n, err := buf.Write(b)
 		utest.IsNilNow(t, err)
@@ -28,6 +29,32 @@ func Test_Buffer_ReadWrite(t *testing.T) {
 		n, err = buf.Read(c)
 		utest.IsNilNow(t, err)
 		utest.EqualNow(t, n, len(b))
+		utest.EqualNow(t, b, c)
+	}
+}
+
+func Test_Buffer_Bytes(t *testing.T) {
+	var buf Buffer
+	for i := 0; i < 10000; i++ {
+		b := RandBytes(256)
+		buf.Grow(len(b))
+
+		buf.WriteBytes(b)
+
+		c := buf.ReadBytes(len(b))
+		utest.EqualNow(t, b, c)
+	}
+}
+
+func Test_Buffer_String(t *testing.T) {
+	var buf Buffer
+	for i := 0; i < 10000; i++ {
+		b := string(RandBytes(256))
+		buf.Grow(len(b))
+
+		buf.WriteString(b)
+
+		c := buf.ReadString(len(b))
 		utest.EqualNow(t, b, c)
 	}
 }
