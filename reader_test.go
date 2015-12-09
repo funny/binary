@@ -494,3 +494,51 @@ func Test_ReadWrite_Int64LE(t *testing.T) {
 		utest.EqualNow(t, v1, v2)
 	})
 }
+
+func Test_ReadWrite_IntBE(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+		w.WriteIntBE(v1)
+		utest.IsNilNow(t, w.Error())
+
+		v2 := r.ReadIntBE()
+		utest.IsNilNow(t, r.Error())
+		utest.EqualNow(t, v1, v2)
+	})
+}
+
+func Test_ReadWrite_IntLE(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+		w.WriteIntLE(v1)
+		utest.IsNilNow(t, w.Error())
+
+		v2 := r.ReadIntLE()
+		utest.IsNilNow(t, r.Error())
+		utest.EqualNow(t, v1, v2)
+	})
+}
+
+func Test_ReadWrite_UintBE(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+		w.WriteUintBE(v1)
+		utest.IsNilNow(t, w.Error())
+
+		v2 := r.ReadUintBE()
+		utest.IsNilNow(t, r.Error())
+		utest.EqualNow(t, v1, v2)
+	})
+}
+
+func Test_ReadWrite_UintLE(t *testing.T) {
+	ReadWriteTest(t, 10000, func(r *Reader, w *Writer) {
+		v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+		w.WriteUintLE(v1)
+		utest.IsNilNow(t, w.Error())
+
+		v2 := r.ReadUintLE()
+		utest.IsNilNow(t, r.Error())
+		utest.EqualNow(t, v1, v2)
+	})
+}

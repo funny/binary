@@ -383,6 +383,42 @@ func Test_Buffer_Int64LE(t *testing.T) {
 	utest.EqualNow(t, v1, v2)
 }
 
+func Test_Buffer_IntBE(t *testing.T) {
+	var buf = Buffer{Data: make([]byte, 10)}
+	v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+	buf.WriteIntBE(v1)
+
+	v2 := buf.ReadIntBE()
+	utest.EqualNow(t, v1, v2)
+}
+
+func Test_Buffer_IntLE(t *testing.T) {
+	var buf = Buffer{Data: make([]byte, 10)}
+	v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+	buf.WriteIntLE(v1)
+
+	v2 := buf.ReadIntLE()
+	utest.EqualNow(t, v1, v2)
+}
+
+func Test_Buffer_UintBE(t *testing.T) {
+	var buf = Buffer{Data: make([]byte, 10)}
+	v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+	buf.WriteUintBE(v1)
+
+	v2 := buf.ReadUintBE()
+	utest.EqualNow(t, v1, v2)
+}
+
+func Test_Buffer_UintLE(t *testing.T) {
+	var buf = Buffer{Data: make([]byte, 10)}
+	v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+	buf.WriteUintLE(v1)
+
+	v2 := buf.ReadUintLE()
+	utest.EqualNow(t, v1, v2)
+}
+
 var bmBuffer = Buffer{Data: bmBuf}
 
 func Benchmark_Buffer_ReadUint16LE(b *testing.B) {

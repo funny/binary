@@ -156,3 +156,7 @@ func (writer *Writer) WriteInt56BE(v int64) { writer.WriteUint56BE(uint64(v)) }
 func (writer *Writer) WriteInt56LE(v int64) { writer.WriteUint56LE(uint64(v)) }
 func (writer *Writer) WriteInt64BE(v int64) { writer.WriteUint64BE(uint64(v)) }
 func (writer *Writer) WriteInt64LE(v int64) { writer.WriteUint64LE(uint64(v)) }
+func (writer *Writer) WriteIntBE(v int)     { writer.WriteUint64BE(uint64(v)) }
+func (writer *Writer) WriteIntLE(v int)     { writer.WriteUint64LE(uint64(v)) }
+func (writer *Writer) WriteUintBE(v uint)   { writer.WriteUint64BE(uint64(v)) }
+func (writer *Writer) WriteUintLE(v uint)   { writer.WriteUint64LE(uint64(v)) }

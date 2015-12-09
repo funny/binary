@@ -17,6 +17,12 @@ var _ io.Reader = (*Buffer)(nil)
 var _ io.Writer = (*Buffer)(nil)
 var _ io.ByteReader = (*Buffer)(nil)
 
+func (buf *Buffer) Take(n int) (data []byte) {
+	data = buf.Data[buf.WritePos : buf.WritePos+n]
+	buf.WritePos += n
+	return
+}
+
 func (buf *Buffer) Grow(n int) {
 	if n = buf.WritePos + n; n <= cap(buf.Data) {
 		buf.Data = buf.Data[:n]
@@ -318,6 +324,10 @@ func (buf *Buffer) ReadInt56BE() int64 { return int64(buf.ReadUint56BE()) }
 func (buf *Buffer) ReadInt56LE() int64 { return int64(buf.ReadUint56LE()) }
 func (buf *Buffer) ReadInt64BE() int64 { return int64(buf.ReadUint64BE()) }
 func (buf *Buffer) ReadInt64LE() int64 { return int64(buf.ReadUint64LE()) }
+func (buf *Buffer) ReadIntBE() int     { return int(buf.ReadUint64BE()) }
+func (buf *Buffer) ReadIntLE() int     { return int(buf.ReadUint64LE()) }
+func (buf *Buffer) ReadUintBE() uint   { return uint(buf.ReadUint64BE()) }
+func (buf *Buffer) ReadUintLE() uint   { return uint(buf.ReadUint64LE()) }
 
 func (buf *Buffer) WriteInt8(v int8)     { buf.WriteUint8(uint8(v)) }
 func (buf *Buffer) WriteInt16BE(v int16) { buf.WriteUint16BE(uint16(v)) }
@@ -334,3 +344,7 @@ func (buf *Buffer) WriteInt56BE(v int64) { buf.WriteUint56BE(uint64(v)) }
 func (buf *Buffer) WriteInt56LE(v int64) { buf.WriteUint56LE(uint64(v)) }
 func (buf *Buffer) WriteInt64BE(v int64) { buf.WriteUint64BE(uint64(v)) }
 func (buf *Buffer) WriteInt64LE(v int64) { buf.WriteUint64LE(uint64(v)) }
+func (buf *Buffer) WriteIntBE(v int)     { buf.WriteUint64BE(uint64(v)) }
+func (buf *Buffer) WriteIntLE(v int)     { buf.WriteUint64LE(uint64(v)) }
+func (buf *Buffer) WriteUintBE(v uint)   { buf.WriteUint64BE(uint64(v)) }
+func (buf *Buffer) WriteUintLE(v uint)   { buf.WriteUint64LE(uint64(v)) }

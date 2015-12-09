@@ -160,3 +160,7 @@ func (reader *Reader) ReadInt56BE() int64 { return int64(reader.ReadUint56BE()) 
 func (reader *Reader) ReadInt56LE() int64 { return int64(reader.ReadUint56LE()) }
 func (reader *Reader) ReadInt64BE() int64 { return int64(reader.ReadUint64BE()) }
 func (reader *Reader) ReadInt64LE() int64 { return int64(reader.ReadUint64LE()) }
+func (reader *Reader) ReadIntBE() int     { return int(reader.ReadUint64BE()) }
+func (reader *Reader) ReadIntLE() int     { return int(reader.ReadUint64LE()) }
+func (reader *Reader) ReadUintBE() uint   { return uint(reader.ReadUint64BE()) }
+func (reader *Reader) ReadUintLE() uint   { return uint(reader.ReadUint64LE()) }
