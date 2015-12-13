@@ -46,14 +46,14 @@ func (reader *Reader) ReadString(n int) string {
 
 func (reader *Reader) ReadUvarint() (v uint64) {
 	if reader.err == nil {
-		v, reader.err = ReadUvarint(reader.R.(io.ByteReader))
+		v, reader.err = ReadUvarint(reader)
 	}
 	return
 }
 
 func (reader *Reader) ReadVarint() (v int64) {
 	if reader.err == nil {
-		v, reader.err = ReadVarint(reader.R.(io.ByteReader))
+		v, reader.err = ReadVarint(reader)
 	}
 	return
 }
@@ -67,6 +67,13 @@ func (reader *Reader) seek(n int) (b []byte) {
 		}
 	}
 	return zero[:n]
+}
+
+func (reader *Reader) ReadByte() (byte, error) {
+	if byteReader, ok := reader.R.(io.ByteReader); ok {
+		return byteReader.ReadByte()
+	}
+	return byte(reader.seek(1)[0]), reader.err
 }
 
 func (reader *Reader) ReadUint8() (v uint8) {
