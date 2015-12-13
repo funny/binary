@@ -285,6 +285,34 @@ func Test_BufReader_Uint64LE(t *testing.T) {
 	)
 }
 
+func Test_BufReader_UintBE(t *testing.T) {
+	c := make(chan uint, 10000)
+	BufReaderTest(
+		func(w *Writer) {
+			v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+			w.WriteUintBE(v1)
+			c <- v1
+		},
+		func(r *BufReader) {
+			utest.EqualNow(t, <-c, r.ReadUintBE())
+		},
+	)
+}
+
+func Test_BufReader_UintLE(t *testing.T) {
+	c := make(chan uint, 10000)
+	BufReaderTest(
+		func(w *Writer) {
+			v1 := uint(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+			w.WriteUintLE(v1)
+			c <- v1
+		},
+		func(r *BufReader) {
+			utest.EqualNow(t, <-c, r.ReadUintLE())
+		},
+	)
+}
+
 func Test_BufReader_Uvarint(t *testing.T) {
 	c := make(chan uint64, 10000)
 	BufReaderTest(
@@ -575,6 +603,34 @@ func Test_BufReader_Int64LE(t *testing.T) {
 		},
 		func(r *BufReader) {
 			utest.EqualNow(t, <-c, r.ReadInt64LE())
+		},
+	)
+}
+
+func Test_BufReader_IntBE(t *testing.T) {
+	c := make(chan int, 10000)
+	BufReaderTest(
+		func(w *Writer) {
+			v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+			w.WriteIntBE(v1)
+			c <- v1
+		},
+		func(r *BufReader) {
+			utest.EqualNow(t, <-c, r.ReadIntBE())
+		},
+	)
+}
+
+func Test_BufReader_IntLE(t *testing.T) {
+	c := make(chan int, 10000)
+	BufReaderTest(
+		func(w *Writer) {
+			v1 := int(rand.Int63n(0x7FFFFFFFFFFFFFFF))
+			w.WriteIntLE(v1)
+			c <- v1
+		},
+		func(r *BufReader) {
+			utest.EqualNow(t, <-c, r.ReadIntLE())
 		},
 	)
 }
