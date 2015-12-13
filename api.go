@@ -4,7 +4,6 @@ import "io"
 
 var _ BinaryReader = (*Buffer)(nil)
 var _ BinaryReader = (*Reader)(nil)
-var _ BinaryReader = (*BufReader)(nil)
 var _ BinaryWriter = (*Buffer)(nil)
 var _ BinaryWriter = (*Writer)(nil)
 
