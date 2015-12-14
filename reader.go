@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-var zero []byte
+var zero [MaxVarintLen64]byte
 
 type Reader struct {
 	R   io.Reader
@@ -34,10 +34,9 @@ func (reader *Reader) Read(b []byte) (n int, err error) {
 }
 
 func (reader *Reader) ReadBytes(n int) (b []byte) {
-	var nn int
 	b = make([]byte, n)
-	nn, reader.err = io.ReadFull(reader.R, b)
-	return b[:nn]
+	_, reader.err = io.ReadFull(reader.R, b)
+	return b
 }
 
 func (reader *Reader) ReadString(n int) string {

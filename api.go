@@ -8,6 +8,8 @@ var _ BinaryWriter = (*Buffer)(nil)
 var _ BinaryWriter = (*Writer)(nil)
 
 type BinaryReader interface {
+	Error() error
+
 	io.Reader
 	io.ByteReader
 
@@ -67,6 +69,8 @@ type BinaryReader interface {
 }
 
 type BinaryWriter interface {
+	Error() error
+
 	io.Writer
 
 	WriteBytes(b []byte)

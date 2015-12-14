@@ -10,6 +10,10 @@ type Buffer struct {
 	WritePos int
 }
 
+func (buf *Buffer) Error() error {
+	return nil
+}
+
 func (buf *Buffer) Read(b []byte) (int, error) {
 	n := copy(b, buf.Data[buf.ReadPos:])
 	buf.ReadPos += n

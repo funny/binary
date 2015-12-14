@@ -40,6 +40,7 @@ func (bo *BufioOptimizer) Next(n int) (BinaryReader, error) {
 		bo.reader.r = bo.R
 		bo.reader.readPos = 0
 		bo.reader.data = data
+		bo.reader.err = nil
 		return &bo.reader, nil
 	}
 }
@@ -50,17 +51,16 @@ type bufioReader struct {
 	maked   []byte
 	readPos int
 	remind  int
+	err     error
 }
 
 func (br *bufioReader) readForward(n int) (b []byte) {
 	for {
-		if br.remind == 0 {
-			b = br.data[br.readPos:]
-			br.readPos += n
-			return
+		if br.err != nil {
+			return zero[:n]
 		}
 
-		if br.readPos+n < len(br.data) {
+		if br.readPos+n <= len(br.data) {
 			b = br.data[br.readPos:]
 			br.readPos += n
 			return
@@ -74,29 +74,43 @@ func (br *bufioReader) readForward(n int) (b []byte) {
 		copy(br.maked, br.data[br.readPos:])
 		br.data = br.maked[:remind]
 		br.remind = 0
+		br.readPos = 0
 
-		if _, err := io.ReadFull(br.r, br.data[dataRemind:]); err == nil {
-			br.readPos = 0
-		}
+		_, br.err = io.ReadFull(br.r, br.data[dataRemind:])
 	}
 }
 
+func (br *bufioReader) Error() error {
+	return br.err
+}
+
 func (br *bufioReader) Read(b []byte) (int, error) {
-	return copy(b, br.readForward(len(b))), nil
+	bb := br.readForward(len(b))
+	if br.err == nil {
+		return copy(b, bb), nil
+	}
+	return 0, br.err
 }
 
 func (br *bufioReader) ReadByte() (byte, error) {
-	return br.ReadUint8(), nil
+	return br.ReadUint8(), br.err
 }
 
 func (br *bufioReader) ReadBytes(n int) (b []byte) {
 	b = make([]byte, n)
-	copy(b, br.readForward(n))
+	bb := br.readForward(n)
+	if br.err == nil {
+		copy(b, bb)
+	}
 	return
 }
 
 func (br *bufioReader) ReadString(n int) string {
-	return string(br.readForward(n))
+	bb := br.readForward(n)
+	if br.err == nil {
+		return string(bb)
+	}
+	return ""
 }
 
 func (br *bufioReader) ReadUvarint() uint64 {
