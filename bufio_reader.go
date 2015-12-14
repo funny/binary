@@ -1,9 +1,13 @@
+// +build go1.5
+
 package binary
 
 import (
 	"bufio"
 	"io"
 )
+
+var _ BinaryReader = (*bufioReader)(nil)
 
 type BufioOptimizer struct {
 	R      *bufio.Reader
