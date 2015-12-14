@@ -19,7 +19,6 @@ func (bo *BufioOptimizer) Next(n int) (BinaryReader, error) {
 		bo.reader.remind = 0
 	}
 
-	var data []byte
 	data, err := bo.R.Peek(n)
 	if err != nil {
 		return nil, err
