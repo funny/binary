@@ -179,16 +179,6 @@ func (buf *Buffer) ReadIntLE() int     { return int(buf.ReadUint64LE()) }
 func (buf *Buffer) ReadUintBE() uint   { return uint(buf.ReadUint64BE()) }
 func (buf *Buffer) ReadUintLE() uint   { return uint(buf.ReadUint64LE()) }
 
-func (buf *Buffer) Grow(n int) {
-	if n = buf.WritePos + n; n <= cap(buf.Data) {
-		buf.Data = buf.Data[:n]
-	} else {
-		newData := make([]byte, n, n+512)
-		copy(newData, buf.Data)
-		buf.Data = newData
-	}
-}
-
 func (buf *Buffer) Take(n int) (data []byte) {
 	data = buf.Data[buf.WritePos : buf.WritePos+n]
 	buf.WritePos += n

@@ -1,10 +1,21 @@
 package binary
 
 import (
-	"github.com/funny/utest"
 	"math/rand"
 	"testing"
+
+	"github.com/funny/utest"
 )
+
+func (buf *Buffer) Grow(n int) {
+	if n = buf.WritePos + n; n <= cap(buf.Data) {
+		buf.Data = buf.Data[:n]
+	} else {
+		newData := make([]byte, n, n+512)
+		copy(newData, buf.Data)
+		buf.Data = newData
+	}
+}
 
 func RandBytes(n int) []byte {
 	n = rand.Intn(n) + 1
